@@ -5,18 +5,15 @@
 	var twitter = require("twitter");
     var Spotify = require ("node-spotify-api");
     var liriArgument = process.argv[2];
+    var searchData = process.argv[3];
     nodeApp();
     // Start the app
 function nodeApp () {  
-    console.log(liriArgument);
-    //if liriArg !=""
-    //then  liriarg = processargv
-    //else continue
-    //command options
+    //command options;
 	switch(liriArgument) {
-		case "my-tweets": readTweets(); break;
-		case "spotify-this-song": spotifyThis(); break;
-		case "movie-this": movieThis(); break;
+		case "my-tweets": readTweets(searchData); break;
+		case "spotify-this-song": spotifyThis(searchData); break;
+		case "movie-this": movieThis(searchData); break;
 		case "do-what-it-says": doWhatItSays(); break;
 	// Instructions displayed in terminal if no command typed
 		default: console.log("\r\n" +"Try typing one of the following commands after 'node liri.js' : " +"\r\n"+
@@ -34,7 +31,7 @@ function readTweets() {
 			access_token_key: keys.twitterKeys.access_token_key,
 			access_token_secret: keys.twitterKeys.access_token_secret, 
 		});
-		var twitterUsername = process.argv[3];
+		var twitterUsername = searchData;
 		if(!twitterUsername){
 			twitterUsername = "acodingcamper";
 		}
@@ -59,15 +56,13 @@ function readTweets() {
 			}
 		});
     }
-function spotifyThis(songName) {
+function spotifyThis(searchData) {
     var spotify = new Spotify ({
         id: "523068b5bd864f3b96bef646ecdbcede",
         secret: "e8508674cf81428aa945fc5bbe3c32f5",
     });
-    var songName = process.argv[3];
     // var Artist = process.argv[4];
-    if(!songName){
-        // songName = "The Sign";
+    if(!searchData){
         var spotifyResults = 
         "Artist: Ace of Base\r\n" +
         "Song Title: The Sign\r\n" +
@@ -77,7 +72,7 @@ function spotifyThis(songName) {
         log(spotifyResults);
         return;
     }
-    params = songName;
+    params = searchData;
     spotify.search({ type: "track", query: params }, function(err, data) {
         if(!err){
             var songInfo = data.tracks.items;
@@ -102,7 +97,7 @@ function spotifyThis(songName) {
     });
 };
 function movieThis(){
-    var movie = process.argv[3];
+    var movie = searchData;
     if(!movie){
         movie = "mr nobody";
     }
@@ -129,13 +124,15 @@ function movieThis(){
 };
 };
 function doWhatItSays() {
-    console.log("What are you doing?");
     fs.readFile("random.txt", "utf8", function(error, data){
         if (!error) {
             doWhatItSaysResults = data.split(",");
 //doWhatItSaysResults[0] = liriArgument;
   //          doWhatItSaysResults[1] = process.argv[3];
-  //liriArgument=doWhatItSays
+  liriArgument = doWhatItSaysResults[0];
+    searchData = doWhatItSaysResults[1];
+    console.log(liriArgument);
+    console.log(searchData);
             nodeApp();
             // spotifyThis(doWhatItSaysResults[0], doWhatItSaysResults[1]);
         } else {
